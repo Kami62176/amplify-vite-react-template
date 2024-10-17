@@ -3,6 +3,9 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/data";
 
+import CryptoChart from "./components/CryptoChart";
+import { Button, Typography } from "@mui/material";
+
 const client = generateClient<Schema>();
 
 function App() {
@@ -25,7 +28,8 @@ function App() {
 
   return (
     <main>
-      <h1>{user?.signInDetails?.loginId}'s todos</h1>
+      <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography>
+      <CryptoChart/>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
@@ -36,14 +40,8 @@ function App() {
           </li>
         ))}
       </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
-      </div>
-      <button onClick={signOut}>Sign out</button>
+
+      <Button variant="contained" onClick={signOut}>Sign out</Button>
     </main>
   );
 }
