@@ -19,7 +19,8 @@ function CryptoChart(){
     const [data, setData] = useState<Dataset>(new Dataset())
     const [token, setToken] = useState<string>("bitcoin")
     const [tokenList, setTokenList] = useState<string[]>(["bitcoin", "solana", "eth"])
-
+    setToken("bitcoin")
+    setTokenList(["bitcoin", "solana", "eth"])
     const retreiveCryptoData = async () => {
         setLoading(true)
         try {
