@@ -28,6 +28,7 @@ function App() {
 
   return (
     <main>
+      <Button variant="contained" onClick={signOut}>Sign out</Button>
       <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography>
       <CryptoChart/>
       <button onClick={createTodo}>+ new</button>
@@ -41,7 +42,6 @@ function App() {
         ))}
       </ul>
 
-      <Button variant="contained" onClick={signOut}>Sign out</Button>
     </main>
   );
 }
