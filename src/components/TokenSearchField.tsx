@@ -151,7 +151,7 @@ export default function VirtualizedAutoComplete({OPTIONS, setSearch} : Virtualiz
       getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name}`}
       renderInput={(params) => 
         <TextField 
-        {...params} label="Search" 
+        {...params} label="Search Token" 
         id="search-input"
         slotProps={{
             input: {
