@@ -1,9 +1,8 @@
-
-
 import { Button } from "@aws-amplify/ui-react";
-import { Autocomplete, TextField } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { useEffect, useState } from "react";
+
+import Virtualize from "./TokenSearchField";
 
 class Dataset {
     date: Date[]
@@ -26,13 +25,12 @@ class TokenInfo {
     }
 }
 
-
 function CryptoChart(){
     const [isLoading, setLoading] = useState<boolean>(false)
     const [data, setData] = useState<Dataset>(new Dataset())
     const [token, setToken] = useState<string>("bitcoin")
     const [tokenList, setTokenList] = useState<TokenInfo[]>([])
-    const [search, setSearch] = useState<TokenInfo>()
+    const [search, setSearch] = useState<TokenInfo | null>(null)
     
     const retreiveCryptoData = async () => {
         setLoading(true)
@@ -74,7 +72,6 @@ function CryptoChart(){
         fetch("./coins-list.json")
             .then(response => response.json())
             .then(data => {
-                // let tokenList = data.map((tokenInfo: TokenInfo) => `${tokenInfo.symbol.toUpperCase()} | ${tokenInfo.name} | ${tokenInfo.id}`)
                 setTokenList(data)
             })
     }, [])
@@ -91,34 +88,12 @@ function CryptoChart(){
         }
     }
 
-
-
     return (
         <>
             {isLoading ? 
             <></> :
             <>
-                <Autocomplete 
-                    onChange={(_, value) => setSearch(value)}
-                    disableClearable 
-                     
-                    includeInputInList
-                    options={tokenList}
-                    getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name} | ${option.id}`}
-                    renderInput={(params) => (
-                        <TextField 
-                            {...params} label="Search" 
-                            id="search-input"
-                            slotProps={{
-                                input: {
-                                    ...params.InputProps,
-                                    type: 'search',
-                                },
-                            }}
-                            
-                        />        
-                    )}
-                />
+                <Virtualize OPTIONS={tokenList} setSearch={setSearch}/>
                 <Button onClick={validateSearch}>Search</Button>
                 <LineChart        
                     xAxis={
@@ -137,7 +112,6 @@ function CryptoChart(){
             </>
             }
         </>
-        
     )
 }
 
