@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { generateClient } from "aws-amplify/data";
 
 import CryptoChart from "./components/CryptoChart";
-import { Button, Typography } from "@mui/material";
+import { AppBar, Button, Container } from "@mui/material";
 
 const client = generateClient<Schema>();
 
 function App() {
-  const { user, signOut } = useAuthenticator();
+  const {  signOut } = useAuthenticator(); // user object was here
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
 
   useEffect(() => {
@@ -27,22 +27,27 @@ function App() {
   }
 
   return (
-    <main>
-      <Button variant="contained" onClick={signOut}>Sign out</Button>
-      <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography>
-      <CryptoChart/>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li
-            onClick={() => deleteTodo(todo.id)}
-            key={todo.id}>
-              {todo.content}
-          </li>
-        ))}
-      </ul>
+    <>
+      <AppBar position={"static"} sx={{margin: "10px"}}>
+        <Button variant="contained" onClick={signOut} fullWidth={false}>Sign out</Button>
+      </AppBar>
+      <Container >
+        {/* <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography> */}
 
-    </main>
+        <CryptoChart/>
+        <button onClick={createTodo}>+ new</button>
+        <ul>
+          {todos.map((todo) => (
+            <li
+              onClick={() => deleteTodo(todo.id)}
+              key={todo.id}>
+                {todo.content}
+            </li>
+          ))}
+        </ul>
+
+      </Container>
+    </>
   );
 }
 
