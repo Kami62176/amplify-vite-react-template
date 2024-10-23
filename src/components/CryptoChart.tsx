@@ -14,7 +14,7 @@ interface ChartingProps {
     data: Dataset
 }
 
-function CryptoChart( {data} : ChartingProps){
+function CryptoChart({ data }: ChartingProps) {
     return (
         <Plot
             data={[
@@ -23,10 +23,10 @@ function CryptoChart( {data} : ChartingProps){
                     y: data.price,
                     type: 'scatter',
                     mode: 'lines+markers',
-                    marker: {color: 'red'},
+                    marker: { color: 'MidnightBlue' },
                 }
             ]}
-            layout={{width: 800, height: 500}}
+            layout={{ width: 1500, height: 800 }}
         />
     )
 }

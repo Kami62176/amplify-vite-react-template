@@ -26,7 +26,7 @@ function renderRow(props: ListChildComponentProps) {
     );
   }
 
-  
+
   const { key, ...optionProps } = dataSet[0];
   const tokenInfo = (dataSet[1] as TokenInfo)
   return (
@@ -139,27 +139,27 @@ interface VirtualizeProps {
   setSearch: React.Dispatch<React.SetStateAction<TokenInfo | null>>
 }
 
-export default function VirtualizedAutoComplete({OPTIONS, setSearch} : VirtualizeProps) {
+export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: VirtualizeProps) {
   return (
     <Autocomplete
-      sx={{ width: 300 }}
+      sx={{ width: 500 }}
       onChange={(_, value) => setSearch(value)}
       disableClearable
       disableListWrap
       includeInputInList
       options={OPTIONS}
       getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name}`}
-      renderInput={(params) => 
-        <TextField 
-        {...params} label="Search Token" 
-        id="search-input"
-        slotProps={{
+      renderInput={(params) =>
+        <TextField
+          {...params} label="Search Token"
+          id="search-input"
+          slotProps={{
             input: {
-                ...params.InputProps,
-                type: 'search',
+              ...params.InputProps,
+              type: 'search',
             },
-        }}
-        />   
+          }}
+        />
       }
       renderOption={(props, option, state) =>
         [props, option, state.index] as React.ReactNode
