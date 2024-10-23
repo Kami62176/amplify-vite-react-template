@@ -1,16 +1,12 @@
-import type { Schema } from "../amplify/data/resource";
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useEffect, useState } from "react";
-import { generateClient } from "aws-amplify/data";
 
-import { AppBar, Button, Container } from "@mui/material";
+
+import { AppBar, Box, Button } from "@mui/material";
 
 import CryptoChart from "./components/CryptoChart";
 import VirtualizedAutoComplete from "./components/TokenSearchField";
 import Watchlist from "./components/Watchlist";
-
-
-const client = generateClient<Schema>();
 
 export default function App() {
   const { signOut } = useAuthenticator(); // user object was here
@@ -36,54 +32,22 @@ export default function App() {
       })
   }, ["never"])
 
-
-
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
-
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
-
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
-  }
-
-
-
   return (
     <>
       <AppBar position={"static"} sx={{ padding: 1, borderRadius: 2, backgroundColor: "#383f47" }}>
         <Button variant="contained" onClick={signOut} sx={{ width: 100, backgroundColor: "#707e8f" }}>Sign out</Button>
       </AppBar>
-      <Container >
+      <Box>
         {/* <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography> */}
+        <Box display={"inline-block"} width={"100%"}>
         <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSearch} />
         <Button variant="outlined" onClick={() => { validateSearch(search, tokenList, setToken) }} disabled={isLoading}>Search</Button>
+        </Box>
         <CryptoChart data={data} />
-      </Container>
-      <Container>
+      </Box>
+      <Box>
         <Watchlist setToken={setToken} />
-      </Container>
-
-      {/* Tutorial stuff */}
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li
-            onClick={() => deleteTodo(todo.id)}
-            key={todo.id}>
-            {todo.content}
-          </li>
-        ))}
-      </ul>
-
-
+      </Box>
     </>
   );
 }

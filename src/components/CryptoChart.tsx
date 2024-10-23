@@ -16,7 +16,9 @@ interface ChartingProps {
 
 function CryptoChart({ data }: ChartingProps) {
     return (
+        
         <Plot
+            divId='main-chart'
             data={[
                 {
                     x: data.date,
