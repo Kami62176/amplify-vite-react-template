@@ -15,8 +15,8 @@ interface ChartingProps {
 }
 
 function CryptoChart({ data }: ChartingProps) {
+    // console.log(JSON.stringify(data))
     return (
-        
         <Plot
             divId='main-chart'
             data={[
@@ -28,7 +28,7 @@ function CryptoChart({ data }: ChartingProps) {
                     marker: { color: 'MidnightBlue' },
                 }
             ]}
-            layout={{ width: 1500, height: 800 }}
+            layout={{ width: window.innerWidth * 0.80, height: window.innerHeight * 0.8}}
         />
     )
 }

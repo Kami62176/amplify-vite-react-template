@@ -87,7 +87,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
 
     return (
         <>
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: '#707e8f', padding: 1, borderRadius: 1 }}>
+            <List sx={{ width: '100%', maxWidth: 360, bgcolor: '#707e8f', padding: 1, borderRadius: 0 }}>
                 <ListItem
                     disableGutters
                     secondaryAction={<PromptDialog />}//</List><IconButton onClick={AddTokenToWatchlist}><AddIcon/></IconButton>}
@@ -95,7 +95,6 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                     <Typography sx={{ fontWeight: "bold", fontSize: 18, color: "white" }}>Watchlist</Typography>
                 </ListItem>
                 {watchlist.map((item) => {
-                    console.log("this is an item: " + item)
                     return (
                         <ListItem
                             key={item.id}

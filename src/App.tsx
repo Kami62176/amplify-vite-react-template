@@ -1,12 +1,15 @@
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useEffect, useState } from "react";
 
-
-import { AppBar, Box, Button } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import CryptoChart from "./components/CryptoChart";
 import VirtualizedAutoComplete from "./components/TokenSearchField";
 import Watchlist from "./components/Watchlist";
+import AddIndicatorButton from './components/AddIndicatorButton';
+import ChartIndicators from './components/IndicatorCharts';
 
 export default function App() {
   const { signOut } = useAuthenticator(); // user object was here
@@ -16,7 +19,7 @@ export default function App() {
   const [token, setToken] = useState<string>("bitcoin")
   const [tokenList, setTokenList] = useState<TokenInfo[]>([])
   const [search, setSearch] = useState<TokenInfo | null>(null)
-
+  const [indicatorDatasets, setIndicatorDatasets] = useState<Dataset[]>([])
 
   useEffect(() => {
     retreiveCryptoData(setLoading, token, setData)
@@ -34,20 +37,38 @@ export default function App() {
 
   return (
     <>
-      <AppBar position={"static"} sx={{ padding: 1, borderRadius: 2, backgroundColor: "#383f47" }}>
-        <Button variant="contained" onClick={signOut} sx={{ width: 100, backgroundColor: "#707e8f" }}>Sign out</Button>
-      </AppBar>
-      <Box>
-        {/* <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography> */}
-        <Box display={"inline-block"} width={"100%"}>
-        <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSearch} />
-        <Button variant="outlined" onClick={() => { validateSearch(search, tokenList, setToken) }} disabled={isLoading}>Search</Button>
-        </Box>
-        <CryptoChart data={data} />
-      </Box>
-      <Box>
-        <Watchlist setToken={setToken} />
-      </Box>
+      <header>
+        <Stack direction="row" sx={{ padding: "0px", margin: 0, borderRadius: 0}}>
+          <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSearch} />
+          <IconButton 
+            onClick={() => { validateSearch(search, tokenList, setToken) }} 
+            disabled={isLoading}
+            color='primary'
+            size='large'
+            
+            >
+            <SearchIcon/>
+          </IconButton>
+          <AddIndicatorButton indicatorDatasets={indicatorDatasets} data={data} setIndicatorDatasets={setIndicatorDatasets}/>
+        </Stack>
+      </header>
+      <main className='chart-page'>
+        <div className='chart-block'>
+          {/* <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography> */}
+          
+            <CryptoChart data={data} />
+            <ChartIndicators datasets={indicatorDatasets} />
+
+        </div>
+        <div className='datalist-block'>
+          <Watchlist setToken={setToken} />
+        </div>
+        <div className='sidebar'>
+          <IconButton  onClick={signOut} sx={{ backgroundColor: "#707e8f" }}>
+            <LogoutIcon/>    
+          </IconButton>
+        </div>
+      </main>
     </>
   );
 }
