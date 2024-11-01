@@ -11,6 +11,8 @@ import Watchlist from "./components/Watchlist";
 import AddIndicatorButton from './components/AddIndicatorButton';
 import ChartIndicators from './components/IndicatorCharts';
 
+import { Dataset, TokenInfo } from './models/models';
+
 export default function App() {
   const { signOut } = useAuthenticator(); // user object was here
 
@@ -22,76 +24,51 @@ export default function App() {
   const [indicatorDatasets, setIndicatorDatasets] = useState<Dataset[]>([])
 
   useEffect(() => {
-    retreiveCryptoData(setLoading, token, setData)
+    getTokenData(setLoading, token, setData)
   },
     [token]
   )
 
   useEffect(() => {
-    fetch("./coins-list.json")
-      .then(response => response.json())
-      .then(data => {
-        setTokenList(data)
-      })
+    getTokenList(setTokenList)
   }, ["never"])
 
   return (
     <>
       <header>
-        <Stack direction="row" sx={{ padding: "0px", margin: 0, borderRadius: 0}}>
+        <Stack direction="row" sx={{ padding: "0px", margin: 0, borderRadius: 0 }}>
           <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSearch} />
-          <IconButton 
-            onClick={() => { validateSearch(search, tokenList, setToken) }} 
+          <IconButton
+            onClick={() => { validateSearch(search, tokenList, setToken) }}
             disabled={isLoading}
             color='primary'
             size='large'
-            
-            >
-            <SearchIcon/>
+
+          >
+            <SearchIcon />
           </IconButton>
-          <AddIndicatorButton indicatorDatasets={indicatorDatasets} data={data} setIndicatorDatasets={setIndicatorDatasets}/>
+          <AddIndicatorButton indicatorDatasets={indicatorDatasets} data={data} setIndicatorDatasets={setIndicatorDatasets} />
         </Stack>
       </header>
       <main className='chart-page'>
         <div className='chart-block'>
           {/* <Typography variant="h4">{user?.signInDetails?.loginId}'s todos</Typography> */}
-          
-            <CryptoChart data={data} />
-            <ChartIndicators datasets={indicatorDatasets} />
+
+          <CryptoChart data={data} />
+          <ChartIndicators datasets={indicatorDatasets} />
 
         </div>
         <div className='datalist-block'>
           <Watchlist setToken={setToken} />
         </div>
         <div className='sidebar'>
-          <IconButton  onClick={signOut} sx={{ backgroundColor: "#707e8f" }}>
-            <LogoutIcon/>    
+          <IconButton onClick={signOut} sx={{ backgroundColor: "#707e8f" }}>
+            <LogoutIcon />
           </IconButton>
         </div>
       </main>
     </>
   );
-}
-
-class TokenInfo {
-  id: string
-  symbol: string
-  name: string
-  constructor(id: string = "bitcoin", symbol: string = "BTC", name: string = "Bitcoin") {
-    this.id = id
-    this.symbol = symbol
-    this.name = name
-  }
-}
-
-class Dataset {
-  date: Date[]
-  price: number[];
-
-  constructor(date: Date[] = [], price: number[] = []) {
-    this.date = date
-    this.price = price
-  }
 }
 
 function validateSearch(search: TokenInfo | null, tokenList: TokenInfo[], setToken: React.Dispatch<React.SetStateAction<string>>) {
@@ -106,32 +83,35 @@ function validateSearch(search: TokenInfo | null, tokenList: TokenInfo[], setTok
   }
 }
 
-async function retreiveCryptoData(setLoading: React.Dispatch<React.SetStateAction<boolean>>, token: string, setData: React.Dispatch<React.SetStateAction<Dataset>>) {
+async function getTokenList(setTokenList: React.Dispatch<React.SetStateAction<TokenInfo[]>>) {
+  try {
+    const response = await fetch("http://localhost:3000/token/list")
+    const data = await response.json()
+    setTokenList(data)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+async function getTokenData(setLoading: React.Dispatch<React.SetStateAction<boolean>>, token: string, setData: React.Dispatch<React.SetStateAction<Dataset>>) {
   setLoading(true)
   try {
     const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        'x-cg-demo-api-key': 'CG-4pjqNJFng5KrtEHMvmrwLCyp '
-      }
+      method: 'GET'
     };
     console.log("Getting token data from " + token)
-    fetch(`https://api.coingecko.com/api/v3/coins/${token}/market_chart?vs_currency=usd&days=365&interval=daily`, options)
-      .then(response => response.json())
-      .then(response => {
-        console.log("Response gotten")
-        let dataset = new Dataset()
-        response.prices.map((datapoint: Array<number>) => {
-          dataset.date.push(new Date(datapoint[0]))
-          dataset.price.push(datapoint[1])
-        })
-        console.log(dataset)
-        setData(dataset)
-      })
-      .catch(err => console.error(err));
-  } catch (err) {
+    const response = await fetch(`http://localhost:3000/token/data/${token}`, options)
+    const body = await response.json()
 
+    let dataset = new Dataset()
+
+    dataset.price = body.price
+    dataset.date = body.date
+
+    console.log(dataset)
+    setData(dataset)
+  } catch (err) {
+    console.error(err)
   } finally {
     setLoading(false)
   }

@@ -1,15 +1,7 @@
 import { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 
-class Dataset {
-    date: Date[]
-    price: number[];
-
-    constructor(date: Date[] = [], price: number[] = []) {
-        this.date = date
-        this.price = price
-    }
-}
+import { Dataset} from '../models/models';
 
 interface ChartingProps {
     datasets: Dataset[]
