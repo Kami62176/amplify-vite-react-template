@@ -3,12 +3,12 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
-import { Button, Dialog, DialogActions, DialogTitle, ListItemButton, Typography } from '@mui/material';
+import { Button, Container, Dialog, DialogActions, DialogTitle, ListItemButton, Typography } from '@mui/material';
 
 import { DialogsProvider, useDialogs, DialogProps } from '@toolpad/core/useDialogs';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
-import VirtualizedAutoComplete from './TokenSearchField';
+import VirtualizedAutoComplete from './VirtualizedAutoComplete';
 
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../../amplify/data/resource";
@@ -23,11 +23,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
     const [watchlist, setWatchlist] = useState<Array<Schema["Watchlist"]["type"]>>([])
 
     useEffect(() => {
-        fetch("./coins-list.json")
-            .then(response => response.json())
-            .then(data => {
-                setTokenList(data)
-            })
+        getTokenList(setTokenList)
     }, [])
 
     useEffect(() => {
@@ -41,16 +37,20 @@ export default function Watchlist({ setToken }: WatchlistProps) {
         const [selection, setSelection] = useState<TokenInfo | null>(null)
 
         return (
-            <Dialog fullWidth open={open} onClose={() => onClose()}>
-                <DialogTitle>Select Token to Add to Watchlist</DialogTitle>
-                <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSelection} />
-                <DialogActions>
-                    <Button onClick={() => onClose()}>Cancel</Button>
-                    <Button onClick={() => {
-                        CreateWatchlistItem(selection)
-                        onClose()
-                    }}>Add</Button>
-                </DialogActions>
+            <Dialog fullWidth open={open} onClose={() => onClose()} disablePortal={false}>
+                <div className="add-to-watchlist-dialog">
+                    <DialogTitle color="white">Select Token to Add to Watchlist</DialogTitle>
+                    <Container>
+                        <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSelection} />
+                    </Container>
+                    <DialogActions>
+                        <Button sx={{color:'white'}} onClick={() => onClose()}>Cancel</Button>
+                        <Button sx={{color:'white'}} onClick={() => {
+                            CreateWatchlistItem(selection)
+                            onClose()
+                        }}>Add</Button>
+                    </DialogActions>
+                </div>
             </Dialog>
         )
     }
@@ -87,7 +87,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
 
     return (
         <>
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: '#707e8f', padding: 1, borderRadius: 0 }}>
+            <List sx={{ width: '100%', maxWidth: 360, padding: 1, borderTopLeftRadius: 4, backgroundColor: "#1A1A28" }}>
                 <ListItem
                     disableGutters
                     secondaryAction={<PromptDialog />}//</List><IconButton onClick={AddTokenToWatchlist}><AddIcon/></IconButton>}
@@ -103,6 +103,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                             secondaryAction={
                                 <IconButton
                                     onClick={() => RemoveTokenFromWatchlist(item.id)}
+                                    
                                 >
                                     <DeleteForeverIcon />
                                 </IconButton>
@@ -128,6 +129,16 @@ type TokenInfo = {
 
 function RemoveTokenFromWatchlist(tokenId: string) {
     client.models.Watchlist.delete({ id: tokenId })
+}
+
+async function getTokenList(setTokenList: React.Dispatch<React.SetStateAction<TokenInfo[]>>) {
+    try {
+        const response = await fetch("http://localhost:3000/token/list")
+        const data = await response.json()
+        setTokenList(data)
+    } catch (err) {
+        console.error(err)
+    }
 }
 
 

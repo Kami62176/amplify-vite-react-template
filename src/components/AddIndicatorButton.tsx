@@ -40,6 +40,7 @@ export default function AddIndicatorButton({data, indicatorDatasets, setIndicato
         const dialogs = useDialogs()
         return (
             <Button 
+            sx={{color:'white'}}
             variant="outlined"
             onClick={async () => {
                 await dialogs.open(MyDialog)
@@ -75,9 +76,8 @@ function AddRsiButton({data, indicatorDatasets, setIndicatorDatasets}: Indicator
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => {
-                        onClose(length)
-                        }}>Add</Button>
+                    <Button onClick={() => onClose(null)}>Cancel</Button>
+                    <Button onClick={() => onClose(length)}>Add</Button>
                 </DialogActions>
             </Dialog>
         )
@@ -88,12 +88,12 @@ function AddRsiButton({data, indicatorDatasets, setIndicatorDatasets}: Indicator
             <Button onClick={async () => {
                 const length = await dialogs.open(RsiDialog)
                 console.log(length)
-
-                const rsiData = await GetRsiData(data, length)
-                console.log(rsiData)
-
-                const indicatorDataset = new Dataset(data.date, rsiData)
-                setIndicatorDatasets([...indicatorDatasets, indicatorDataset])
+                if (length !== null) {
+                    const rsiData = await GetRsiData(data, length)
+                    console.log(rsiData)
+                    const indicatorDataset = new Dataset(data.date, rsiData)
+                    setIndicatorDatasets([...indicatorDatasets, indicatorDataset])
+                }
             }} 
             fullWidth
             variant="outlined"
@@ -114,7 +114,7 @@ const GetRsiData = async (data: Dataset, length: number | null) => {
             body: JSON.stringify(data)
         }
 
-        let response = await fetch(`http://localhost:3000/indicator/rsi/${length}`, options)
+        let response = await fetch(`http://localhost:3001/indicator/rsi/${length}`, options)
         return response.json()
     } catch (err) {
         console.error(err)

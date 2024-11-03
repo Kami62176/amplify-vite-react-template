@@ -8,7 +8,6 @@ interface ChartingProps {
 }
 
 function ChartIndicators({datasets}: ChartingProps) {
-    console.log("this is the dataset of indicators: " + JSON.stringify(datasets))
     const [indicatorCharts, setIndicatorCharts] = useState<JSX.Element[]>([<p key={"faded"}>Pushing P</p>])
 
     useEffect(() => { 

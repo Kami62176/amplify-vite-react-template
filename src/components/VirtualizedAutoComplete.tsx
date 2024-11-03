@@ -16,6 +16,7 @@ function renderRow(props: ListChildComponentProps) {
   const inlineStyle = {
     ...style,
     top: (style.top as number) + LISTBOX_PADDING,
+    "paddingLeft": "10px",
   };
 
   if (dataSet.hasOwnProperty('group')) {
@@ -54,66 +55,65 @@ function useResetCache(data: any) {
 }
 
 // Adapter for react-window
-const ListboxComponent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLElement>
->(function ListboxComponent(props, ref) {
-  const { children, ...other } = props;
-  const itemData: React.ReactElement<unknown>[] = [];
-  (children as React.ReactElement<unknown>[]).forEach(
-    (
-      item: React.ReactElement<unknown> & {
-        children?: React.ReactElement<unknown>[];
+const ListboxComponent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLElement>>
+(function ListboxComponent(props, ref) {
+    const { children, ...other } = props;
+    const itemData: React.ReactElement<unknown>[] = [];
+    (children as React.ReactElement<unknown>[]).forEach(
+      (
+        item: React.ReactElement<unknown> & {
+          children?: React.ReactElement<unknown>[];
+        },
+      ) => {
+        itemData.push(item);
+        itemData.push(...(item.children || []));
       },
-    ) => {
-      itemData.push(item);
-      itemData.push(...(item.children || []));
-    },
-  );
+    );
 
-  const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'), {
-    noSsr: true,
-  });
-  const itemCount = itemData.length;
-  const itemSize = smUp ? 36 : 48;
+    const theme = useTheme();
+    const smUp = useMediaQuery(theme.breakpoints.up('sm'), {
+      noSsr: true,
+    });
+    const itemCount = itemData.length;
+    const itemSize = smUp ? 36 : 48;
 
-  const getChildSize = (child: React.ReactElement<unknown>) => {
-    if (child.hasOwnProperty('group')) {
-      return 48;
-    }
+    const getChildSize = (child: React.ReactElement<unknown>) => {
+      if (child.hasOwnProperty('group')) {
+        return 48;
+      }
 
-    return itemSize;
-  };
+      return itemSize;
+    };
 
-  const getHeight = () => {
-    if (itemCount > 8) {
-      return 8 * itemSize;
-    }
-    return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
-  };
+    const getHeight = () => {
+      if (itemCount > 8) {
+        return 8 * itemSize;
+      }
+      return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
+    };
 
-  const gridRef = useResetCache(itemCount);
+    const gridRef = useResetCache(itemCount);
 
-  return (
-    <div ref={ref}>
-      <OuterElementContext.Provider value={other}>
-        <VariableSizeList
-          itemData={itemData}
-          height={getHeight() + 2 * LISTBOX_PADDING}
-          width="100%"
-          ref={gridRef}
-          outerElementType={OuterElementType}
-          innerElementType="ul"
-          itemSize={(index) => getChildSize(itemData[index])}
-          overscanCount={5}
-          itemCount={itemCount}
-        >
-          {renderRow}
-        </VariableSizeList>
-      </OuterElementContext.Provider>
-    </div>
-  );
+    return (
+      <div ref={ref}>
+        <OuterElementContext.Provider value={other}>
+          <VariableSizeList
+            itemData={itemData}
+            height={getHeight() + 1 * LISTBOX_PADDING}
+            width="100%"
+            ref={gridRef}
+            outerElementType={OuterElementType}
+            innerElementType="ul"
+            itemSize={(index) => getChildSize(itemData[index])}
+            overscanCount={5}
+            itemCount={itemCount}
+            style={{color: "white", backgroundColor: "#2b2b3d"}}
+          >
+            {renderRow}
+          </VariableSizeList>
+        </OuterElementContext.Provider>
+      </div>
+    );
 });
 
 
@@ -142,11 +142,35 @@ interface VirtualizeProps {
 export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: VirtualizeProps) {
   return (
     <Autocomplete
-      sx={{ width: 500 }}
+    sx={{
+      width: 250,
+      margin: 1,
+      "& .MuiInputBase-root": {
+        color: "white", // Input text color
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: "white", // Outline color
+        },
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: "white",
+        },
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderColor: "white",
+        },
+      },
+      "& .MuiInputLabel-root": {
+        color: "white", // Label color
+      },
+      "& .MuiSvgIcon-root": {
+        color: "white", // Icon color (e.g., dropdown arrow)
+      },
+    }}
+      style={{color: "white"}}
       onChange={(_, value) => setSearch(value)}
       disableClearable
       disableListWrap
       includeInputInList
+      autoHighlight
+      
       options={OPTIONS}
       getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name}`}
       renderInput={(params) =>
@@ -159,6 +183,7 @@ export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: Virtuali
               type: 'search',
             },
           }}
+
         />
       }
       renderOption={(props, option, state) =>
