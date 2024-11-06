@@ -6,10 +6,10 @@ import { useState } from "react";
 class Dataset {
     date: Date[]
     price: number[];
-  
+
     constructor(date: Date[] = [], price: number[] = []) {
-      this.date = date
-      this.price = price
+        this.date = date
+        this.price = price
     }
 }
 
@@ -19,14 +19,14 @@ interface IndicatorProps {
     setIndicatorDatasets: React.Dispatch<React.SetStateAction<Dataset[]>>
 }
 
-export default function AddIndicatorButton({data, indicatorDatasets, setIndicatorDatasets}: IndicatorProps) {
+export default function AddIndicatorButton({ data, indicatorDatasets, setIndicatorDatasets }: IndicatorProps) {
 
     function MyDialog({ open, onClose }: DialogProps) {
         return (
             <Dialog fullWidth open={open} onClose={() => onClose()}>
                 <DialogTitle>Add Indicator</DialogTitle>
                 <DialogContent>
-                    <AddRsiButton data={data} indicatorDatasets={indicatorDatasets} setIndicatorDatasets={setIndicatorDatasets}/>
+                    <AddRsiButton data={data} indicatorDatasets={indicatorDatasets} setIndicatorDatasets={setIndicatorDatasets} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => onClose()}>Cancel</Button>
@@ -39,12 +39,13 @@ export default function AddIndicatorButton({data, indicatorDatasets, setIndicato
     function IndicatorButton() {
         const dialogs = useDialogs()
         return (
-            <Button 
-            sx={{color:'white'}}
-            variant="outlined"
-            onClick={async () => {
-                await dialogs.open(MyDialog)
-            }}>
+            <Button
+                sx={{ color: 'white', height: 50, margin: 1.2 }}
+                variant="outlined"
+                color="white"
+                onClick={async () => {
+                    await dialogs.open(MyDialog)
+                }}>
                 Indicator
             </Button>
         )
@@ -52,16 +53,16 @@ export default function AddIndicatorButton({data, indicatorDatasets, setIndicato
 
     return (
         <DialogsProvider>
-            <IndicatorButton/>
+            <IndicatorButton />
         </DialogsProvider>
     )
 }
 
-function AddRsiButton({data, indicatorDatasets, setIndicatorDatasets}: IndicatorProps){//React.MouseEventHandler<HTMLButtonElement> | undefined) {
-    
+function AddRsiButton({ data, indicatorDatasets, setIndicatorDatasets }: IndicatorProps) {//React.MouseEventHandler<HTMLButtonElement> | undefined) {
+
     function RsiDialog({ open, onClose }: DialogProps<undefined, number | null>) {
         const [length, setLength] = useState(14)
-        
+
         return (
             <Dialog open={open} onClose={() => onClose(null)}>
                 <DialogTitle>Rsi Settings</DialogTitle>
@@ -88,15 +89,16 @@ function AddRsiButton({data, indicatorDatasets, setIndicatorDatasets}: Indicator
             <Button onClick={async () => {
                 const length = await dialogs.open(RsiDialog)
                 console.log(length)
-                if (length !== null) {
+                if (length !== null && data.date) {
+                    console.log(data)
                     const rsiData = await GetRsiData(data, length)
                     console.log(rsiData)
                     const indicatorDataset = new Dataset(data.date, rsiData)
                     setIndicatorDatasets([...indicatorDatasets, indicatorDataset])
                 }
-            }} 
-            fullWidth
-            variant="outlined"
+            }}
+                fullWidth
+                variant="outlined"
             >RSI</Button>
         </DialogsProvider>
     )
@@ -105,7 +107,7 @@ function AddRsiButton({data, indicatorDatasets, setIndicatorDatasets}: Indicator
 
 const GetRsiData = async (data: Dataset, length: number | null) => {
     try {
-        if (length == null) {return}
+        if (length == null) { return }
         const options = {
             method: 'post',
             headers: {
@@ -115,8 +117,8 @@ const GetRsiData = async (data: Dataset, length: number | null) => {
         }
 
         let response = await fetch(`http://localhost:3001/indicator/rsi/${length}`, options)
-        return response.json()
+        return await response.json()
     } catch (err) {
         console.error(err)
-    } 
+    }
 }

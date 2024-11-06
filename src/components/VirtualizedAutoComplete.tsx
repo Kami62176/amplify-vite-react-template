@@ -21,7 +21,7 @@ function renderRow(props: ListChildComponentProps) {
 
   if (dataSet.hasOwnProperty('group')) {
     return (
-      <ListSubheader key={dataSet.key} component="div" style={inlineStyle}>
+      <ListSubheader key={dataSet.key} component="div" sx={inlineStyle}>
         {dataSet.group}
       </ListSubheader>
     );
@@ -31,7 +31,7 @@ function renderRow(props: ListChildComponentProps) {
   const { key, ...optionProps } = dataSet[0];
   const tokenInfo = (dataSet[1] as TokenInfo)
   return (
-    <Typography key={key} component="li" {...optionProps} noWrap style={inlineStyle}>
+    <Typography key={key} component="li" {...optionProps} noWrap sx={inlineStyle}>
       {`${tokenInfo.symbol.toUpperCase()} | ${tokenInfo.name} | ${tokenInfo.id}`}
     </Typography>
   );
@@ -56,7 +56,7 @@ function useResetCache(data: any) {
 
 // Adapter for react-window
 const ListboxComponent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLElement>>
-(function ListboxComponent(props, ref) {
+  (function ListboxComponent(props, ref) {
     const { children, ...other } = props;
     const itemData: React.ReactElement<unknown>[] = [];
     (children as React.ReactElement<unknown>[]).forEach(
@@ -107,13 +107,17 @@ const ListboxComponent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
             itemSize={(index) => getChildSize(itemData[index])}
             overscanCount={5}
             itemCount={itemCount}
-            style={{color: "white", backgroundColor: "#2b2b3d"}}
           >
             {renderRow}
           </VariableSizeList>
         </OuterElementContext.Provider>
       </div>
     );
+  });
+
+const StyledListboxComponent = styled(ListboxComponent)({
+  color: "white",
+  backgroundColor: "#2b2b3d",
 });
 
 
@@ -142,35 +146,17 @@ interface VirtualizeProps {
 export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: VirtualizeProps) {
   return (
     <Autocomplete
-    sx={{
-      width: 250,
-      margin: 1,
-      "& .MuiInputBase-root": {
-        color: "white", // Input text color
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "white", // Outline color
-        },
-        "&:hover .MuiOutlinedInput-notchedOutline": {
-          borderColor: "white",
-        },
-        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: "white",
-        },
-      },
-      "& .MuiInputLabel-root": {
-        color: "white", // Label color
-      },
-      "& .MuiSvgIcon-root": {
-        color: "white", // Icon color (e.g., dropdown arrow)
-      },
-    }}
-      style={{color: "white"}}
+      sx={{
+        width: 250,
+        margin: 1,
+      }}
+      // style={{color: "white"}}
       onChange={(_, value) => setSearch(value)}
       disableClearable
       disableListWrap
       includeInputInList
       autoHighlight
-      
+
       options={OPTIONS}
       getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name}`}
       renderInput={(params) =>
@@ -183,7 +169,6 @@ export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: Virtuali
               type: 'search',
             },
           }}
-
         />
       }
       renderOption={(props, option, state) =>
@@ -191,7 +176,7 @@ export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: Virtuali
       }
       slots={{
         popper: StyledPopper,
-        listbox: ListboxComponent,
+        listbox: StyledListboxComponent,
       }}
     />
   );

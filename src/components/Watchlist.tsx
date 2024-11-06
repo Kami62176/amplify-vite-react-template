@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import { Button, Container, Dialog, DialogActions, DialogTitle, ListItemButton, Typography } from '@mui/material';
 
@@ -33,7 +32,6 @@ export default function Watchlist({ setToken }: WatchlistProps) {
     }, []);
 
     function MyDialog({ open, onClose }: DialogProps) {
-        // ...
         const [selection, setSelection] = useState<TokenInfo | null>(null)
 
         return (
@@ -44,8 +42,8 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                         <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSelection} />
                     </Container>
                     <DialogActions>
-                        <Button sx={{color:'white'}} onClick={() => onClose()}>Cancel</Button>
-                        <Button sx={{color:'white'}} onClick={() => {
+                        <Button color='white' onClick={() => onClose()}>Cancel</Button>
+                        <Button color='white' onClick={() => {
                             CreateWatchlistItem(selection)
                             onClose()
                         }}>Add</Button>
@@ -64,6 +62,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                         const tokenId = await dialogs.open(MyDialog)
                         console.log(tokenId)
                     }}
+                    color="white"
                 >
                     <AddIcon />
                 </IconButton>
@@ -87,30 +86,31 @@ export default function Watchlist({ setToken }: WatchlistProps) {
 
     return (
         <>
-            <List sx={{ width: '100%', maxWidth: 360, padding: 1, borderTopLeftRadius: 4, backgroundColor: "#1A1A28" }}>
+            <List className="watchlist" sx={{ width: '100%', maxWidth: 360, padding: 1, borderTopLeftRadius: 4 }}>
                 <ListItem
                     disableGutters
                     secondaryAction={<PromptDialog />}//</List><IconButton onClick={AddTokenToWatchlist}><AddIcon/></IconButton>}
                 >
-                    <Typography sx={{ fontWeight: "bold", fontSize: 18, color: "white" }}>Watchlist</Typography>
+                    <Typography  sx={{ fontWeight: "bold", fontSize: 16 }}>Watchlist</Typography>
                 </ListItem>
                 {watchlist.map((item) => {
                     return (
                         <ListItem
+                            className="watchlist-item"
                             key={item.id}
                             disableGutters
                             disablePadding
                             secondaryAction={
                                 <IconButton
                                     onClick={() => RemoveTokenFromWatchlist(item.id)}
-                                    
+                                    color="white"
                                 >
                                     <DeleteForeverIcon />
                                 </IconButton>
                             }
                         >
                             <ListItemButton onClick={() => { ChartToken(item.tokenId) }}>
-                                <ListItemText sx={{ color: "white" }} primary={`${item.name}`}></ListItemText>
+                                <Typography className="watchlist-item" sx={{fontSize: 13}}>{item.name}</Typography>
                             </ListItemButton>
                         </ListItem>
                     )

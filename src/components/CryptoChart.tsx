@@ -17,7 +17,7 @@ interface ChartingProps {
 }
 
 function CryptoChart({ data, token, width }: ChartingProps) {
-    // console.log(JSON.stringify(data))
+
     return (
         <Plot
             divId='main-chart'
@@ -30,7 +30,7 @@ function CryptoChart({ data, token, width }: ChartingProps) {
                     marker: { color: 'white' },
                 }
             ]}
-            layout={{ 
+            layout={{
                 title: {
                     text: `${token.toUpperCase()} Price`,
                     font: {
@@ -38,7 +38,7 @@ function CryptoChart({ data, token, width }: ChartingProps) {
                         weight: 1000
                     }
                 },
-                width: width, height: window.innerHeight * 0.6,
+                width: width, height: 500,
                 margin: {
                     l: 15,
                     r: 40,
@@ -57,7 +57,7 @@ function CryptoChart({ data, token, width }: ChartingProps) {
                     color: '#FFFFFF',         // Color of the x-axis line and ticks
                     gridcolor: '#b2b2d4',     // Color of the x-axis grid lines
                     zerolinecolor: '#FFFFFF', // Color of the x-axis zero line (if visible)
-                  },
+                },
             }}
         />
     )

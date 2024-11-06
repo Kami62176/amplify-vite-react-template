@@ -1,22 +1,22 @@
 :root {
   --primary: #2b2b3d;
   --secondary: #1A1A28;
+  --darker: #16161f;
 }
 
 
-.chart-page {
+.main-page {
   padding: 0;
   margin: 0;
   display: flex;
-  height: 94vh; /* Full viewport height */
+  min-height: 100vh; /* Full viewport height */
   margin-top: 5px;
 }
 
 .chart-block {
   flex: 8;
-  width: 73%;
+  width: 70%;
   box-sizing: border-box;
-
 }
 
 .datalist-block {
@@ -27,9 +27,18 @@
 }
 
 
-
 .sidebar {
   /* display: flex; */
+  
+  background-color: var(--secondary);
+  padding: 4px;
+  border-radius: 0;
+  margin: 0;
+  position: sticky;
+  flex: 0 0 30px;
+}
+
+.nav-bar.left {
   height: 100vh;
   background-color: var(--secondary);
   padding: 4px;
@@ -51,7 +60,7 @@ body {
   background-color: var(--primary);
 }
 
-.nav-bar {
+.search-bar {
   background-color: var(--secondary);
 }
 
@@ -61,4 +70,15 @@ body {
 
 .add-to-watchlist-dialog{
   background-color: var(--primary);
+}
+
+.watchlist {
+  background-color: var(--secondary);
+  color: white;
+  
+}
+
+.watchlist-item:hover {
+  background-color: var(--darker);
+  
 }

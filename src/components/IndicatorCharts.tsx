@@ -1,39 +1,70 @@
 import { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 
-import { Dataset} from '../models/models';
+import { Dataset } from '../models/models';
 
 interface ChartingProps {
-    datasets: Dataset[]
+    datasets: Dataset[],
+    width: number
 }
 
-function ChartIndicators({datasets}: ChartingProps) {
-    const [indicatorCharts, setIndicatorCharts] = useState<JSX.Element[]>([<p key={"faded"}>Pushing P</p>])
+function ChartIndicators({ datasets, width }: ChartingProps) {
+    const [indicatorCharts, setIndicatorCharts] = useState<JSX.Element[]>([<p key={"faded"}></p>])
 
-    useEffect(() => { 
-        if (datasets && datasets.length > 0){
+    useEffect(() => {
+        if (datasets && datasets.length > 0) {
             console.log("this is only ran once, dataset length: " + datasets.length)
             const chartTags = datasets.map((data: Dataset, index: number) => (
                 <Plot
                     key={index}
+
                     data={[
                         {
                             x: data.date,
                             y: data.price,
                             type: "scatter",
                             mode: 'lines+markers',
-                            marker: {color: "Red"}
+                            marker: { color: "Red" }
                         }
                     ]}
-                    layout={{width: window.innerWidth * 0.8, height: window.innerHeight * 0.5}}
-                    style={{margin: "0", width: "100%"}}
+                    layout={{
+                        title: {
+                            text: "RSI",
+                            font: {
+                                color: "#FFF",
+                                weight: 1000
+                            }
+                        },
+                        height: 350,
+                        width: width,
+                        margin: {
+                            l: 15,
+                            r: 40,
+                            b: 40,
+                            t: 50
+                        },
+                        yaxis: {
+                            side: 'right',
+                            color: '#FFFFFF',         // Color of the y-axis line and ticks
+                            gridcolor: '#b2b2d4',     // Color of the y-axis grid lines
+                            zerolinecolor: '#FFFFFF',
+                        },
+                        paper_bgcolor: '#2b2b3d',
+                        plot_bgcolor: '#4a4a5e',
+                        xaxis: {
+                            color: '#FFFFFF',         // Color of the x-axis line and ticks
+                            gridcolor: '#b2b2d4',     // Color of the x-axis grid lines
+                            zerolinecolor: '#FFFFFF', // Color of the x-axis zero line (if visible)
+                        },
+                    }}
+
                 />
             ))
-            if (chartTags){
+            if (chartTags) {
                 setIndicatorCharts(chartTags)
             }
-        }    
-    }, [datasets.length])
+        }
+    }, [datasets.length, width])
     return (
         <>
             {indicatorCharts}
