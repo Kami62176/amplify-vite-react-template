@@ -11,13 +11,13 @@ export default function () {
     const navigate = useNavigate();
     return (
         <div className="sidebar left">
-            <IconButton color="white" onClick={() => navigate('./home')}>
+            <IconButton color="white" onClick={() => navigate('/home')}>
                 <CandlestickChartIcon />
             </IconButton>
-            <IconButton color="white" onClick={() => navigate('./strategy')}>
+            <IconButton color="white" onClick={() => navigate('/strategy')}>
                 <TrendingUpIcon />
             </IconButton>
-            <IconButton color="white" onClick={() => navigate('./histogram')}>
+            <IconButton color="white" onClick={() => navigate('/histogram')}>
                 <BarChartIcon/>
             </IconButton>
 

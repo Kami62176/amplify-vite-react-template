@@ -9,7 +9,7 @@
   padding: 0;
   margin: 0;
   display: flex;
-  min-height: 100vh; /* Full viewport height */
+  min-height: 100vh; 
   margin-top: 5px;
 }
 
@@ -22,13 +22,13 @@
 .datalist-block {
   width: 15%;
   box-sizing: border-box;
-  /* border-radius: 0; */
+
   border-top-left-radius: 150px;
 }
 
 
 .sidebar {
-  /* display: flex; */
+  
   
   background-color: var(--secondary);
   padding: 4px;
@@ -75,7 +75,7 @@ body {
 .watchlist {
   background-color: var(--secondary);
   color: white;
-  
+  height: 100%;
 }
 
 .watchlist-item:hover {

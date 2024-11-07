@@ -18,12 +18,8 @@ interface WatchlistProps {
 }
 
 export default function Watchlist({ setToken }: WatchlistProps) {
-    const [tokenList, setTokenList] = useState<TokenInfo[]>([])
     const [watchlist, setWatchlist] = useState<Array<Schema["Watchlist"]["type"]>>([])
 
-    useEffect(() => {
-        getTokenList(setTokenList)
-    }, [])
 
     useEffect(() => {
         client.models.Watchlist.observeQuery().subscribe({
@@ -39,7 +35,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                 <div className="add-to-watchlist-dialog">
                     <DialogTitle color="white">Select Token to Add to Watchlist</DialogTitle>
                     <Container>
-                        <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSelection} />
+                        <VirtualizedAutoComplete setSearch={setSelection} />
                     </Container>
                     <DialogActions>
                         <Button color='white' onClick={() => onClose()}>Cancel</Button>
@@ -129,16 +125,6 @@ type TokenInfo = {
 
 function RemoveTokenFromWatchlist(tokenId: string) {
     client.models.Watchlist.delete({ id: tokenId })
-}
-
-async function getTokenList(setTokenList: React.Dispatch<React.SetStateAction<TokenInfo[]>>) {
-    try {
-        const response = await fetch("http://localhost:3000/token/list")
-        const data = await response.json()
-        setTokenList(data)
-    } catch (err) {
-        console.error(err)
-    }
 }
 
 

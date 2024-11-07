@@ -62,7 +62,7 @@ export default function () {
         <>
             <header className='search-bar'>
                 <Stack direction="row" sx={{ padding: "0px", margin: 0, borderRadius: 0 }}>
-                    <VirtualizedAutoComplete OPTIONS={tokenList} setSearch={setSearch} />
+                    <VirtualizedAutoComplete  setSearch={setSearch} />
                     <IconButton
                         onClick={() => { validateSearch(search, tokenList, setToken) }}
                         disabled={isLoading}

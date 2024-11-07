@@ -139,25 +139,41 @@ type TokenInfo = {
 };
 
 interface VirtualizeProps {
-  OPTIONS: TokenInfo[] // Define the type of OPTIONS prop
   setSearch: React.Dispatch<React.SetStateAction<TokenInfo | null>>
 }
 
-export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: VirtualizeProps) {
+export default function VirtualizedAutoComplete({ setSearch }: VirtualizeProps) {
+  const [tokenList, setTokenList] = React.useState<TokenInfo[]>([{id: "bitcoin", symbol: "BTC", name:"Bitcoin"}])
+
+  async function getTokenList() {
+    try {
+      const response = await fetch("http://localhost:3000/token/list")
+      const data = await response.json()
+      setTokenList(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+
+  React.useEffect(() => {
+    getTokenList()
+  }, [])
+
   return (
     <Autocomplete
       sx={{
         width: 250,
         margin: 1,
       }}
-      // style={{color: "white"}}
+      style={{color: "white"}}
       onChange={(_, value) => setSearch(value)}
       disableClearable
       disableListWrap
       includeInputInList
       autoHighlight
 
-      options={OPTIONS}
+      options={tokenList}
       getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name}`}
       renderInput={(params) =>
         <TextField
@@ -181,3 +197,4 @@ export default function VirtualizedAutoComplete({ OPTIONS, setSearch }: Virtuali
     />
   );
 }
+
