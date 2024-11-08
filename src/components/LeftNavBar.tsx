@@ -18,7 +18,7 @@ export default function () {
                 <TrendingUpIcon />
             </IconButton>
             <IconButton color="white" onClick={() => navigate('/histogram')}>
-                <BarChartIcon/>
+                <BarChartIcon />
             </IconButton>
 
         </div>

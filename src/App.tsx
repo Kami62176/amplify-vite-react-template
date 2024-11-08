@@ -11,7 +11,7 @@ export default function App() {
           <Route index element={<Charts />}></Route>
           <Route path="/strategy" element={<Strategy />}></Route>
           <Route path="/histogram" element={<Histogram />}></Route>
-          <Route path='*' element={<Navigate to='/' replace/>}/>
+          <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
       </BrowserRouter>
     </>

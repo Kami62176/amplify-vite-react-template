@@ -87,7 +87,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                     disableGutters
                     secondaryAction={<PromptDialog />}//</List><IconButton onClick={AddTokenToWatchlist}><AddIcon/></IconButton>}
                 >
-                    <Typography  sx={{ fontWeight: "bold", fontSize: 16 }}>Watchlist</Typography>
+                    <Typography sx={{ fontWeight: "bold", fontSize: 16 }}>Watchlist</Typography>
                 </ListItem>
                 {watchlist.map((item) => {
                     return (
@@ -106,7 +106,7 @@ export default function Watchlist({ setToken }: WatchlistProps) {
                             }
                         >
                             <ListItemButton onClick={() => { ChartToken(item.tokenId) }}>
-                                <Typography className="watchlist-item" sx={{fontSize: 13}}>{item.name}</Typography>
+                                <Typography className="watchlist-item" sx={{ fontSize: 13 }}>{item.name}</Typography>
                             </ListItemButton>
                         </ListItem>
                     )

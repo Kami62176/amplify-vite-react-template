@@ -143,7 +143,7 @@ interface VirtualizeProps {
 }
 
 export default function VirtualizedAutoComplete({ setSearch }: VirtualizeProps) {
-  const [tokenList, setTokenList] = React.useState<TokenInfo[]>([{id: "bitcoin", symbol: "BTC", name:"Bitcoin"}])
+  const [tokenList, setTokenList] = React.useState<TokenInfo[]>([{ id: "bitcoin", symbol: "BTC", name: "Bitcoin" }])
 
   async function getTokenList() {
     try {
@@ -166,7 +166,7 @@ export default function VirtualizedAutoComplete({ setSearch }: VirtualizeProps) 
         width: 250,
         margin: 1,
       }}
-      style={{color: "white"}}
+      style={{ color: "white" }}
       onChange={(_, value) => setSearch(value)}
       disableClearable
       disableListWrap

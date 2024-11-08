@@ -60,11 +60,8 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     "& .MuiInputBase-root": {
-                        
-                        
-                        
                         color: "white", // Input text color
-                        
+
                         "& .MuiOutlinedInput-notchedOutline": {
                             borderColor: "white", // Outline color
                         },
@@ -78,8 +75,8 @@ const theme = createTheme({
                     "& .MuiInputLabel-root": {
                         color: "white", // Label color
                         // height: '30px',
-                        
-                        
+
+
 
                     },
                     "& .MuiSvgIcon-root": {

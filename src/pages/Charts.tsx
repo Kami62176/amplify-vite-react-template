@@ -62,7 +62,7 @@ export default function () {
         <>
             <header className='search-bar'>
                 <Stack direction="row" sx={{ padding: "0px", margin: 0, borderRadius: 0 }}>
-                    <VirtualizedAutoComplete  setSearch={setSearch} />
+                    <VirtualizedAutoComplete setSearch={setSearch} />
                     <IconButton
                         onClick={() => { validateSearch(search, tokenList, setToken) }}
                         disabled={isLoading}
@@ -79,7 +79,7 @@ export default function () {
 
                 <div ref={chartRef} className='chart-block'>
                     <CryptoChart token={tokenList.find(coin => coin.id === token)?.symbol || ""} data={data} width={chartWidth} />
-                    <ChartIndicators datasets={indicatorDatasets} width={chartWidth}/>
+                    <ChartIndicators datasets={indicatorDatasets} width={chartWidth} />
                 </div>
                 <div className='datalist-block'>
                     <Watchlist setToken={setToken} />
