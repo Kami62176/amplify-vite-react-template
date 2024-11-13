@@ -26,12 +26,6 @@ declare module '@mui/material/Button' {
     }
 }
 
-declare module '@mui/material/Textfield' {
-    interface TextfieldPropsColorOverrides {
-        logout: true;
-        white: true;
-    }
-}
 
 const theme = createTheme({
     palette: {
