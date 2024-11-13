@@ -175,6 +175,7 @@ export default function VirtualizedAutoComplete({ setSearch }: VirtualizeProps) 
 
       options={tokenList}
       getOptionLabel={(option) => `${option.symbol.toUpperCase()} | ${option.name}`}
+      defaultValue={{name: "Bitcoin", id: "bitcoin", symbol: "btc"}}
       renderInput={(params) =>
         <TextField
           {...params} label="Search Token"

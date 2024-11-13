@@ -1,15 +1,22 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import LeftNavBar from "../components/LeftNavBar";
 import VirtualizedAutoComplete from "../components/VirtualizedAutoComplete";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StrategyInfo, TokenInfo } from "../models/models";
-import Plot from "react-plotly.js";
+import StrategyInfoTable from "../components/StrategyInfoTable";
+import StrategyChart from "../components/StrategyChart";
 
 
 export default function () {
-    const [selection, setSelection] = useState<TokenInfo | null>(null)
+    const chartRef = useRef<HTMLDivElement>(null)
+    const [selection, setSelection] = useState<TokenInfo | null>({ name: "Bitcoin", id: "bitcoin", symbol: "btc" })
     const [length, setLength] = useState<string>("14")
     const [data, setStrategyInfo] = useState<StrategyInfo | null>(null)
+    const [chartWidth, setChartWidth] = useState<number>(0)
+    const [tablesWidth, setTablesWidth] = useState<number>(0)
+    const [displayType, setDisplayType] = useState<string>("")
+    const [displayMargin, setDisplayMargin] = useState<number>()
+    const [rightValue, setRightValue] = useState<string>("0")
 
     async function getRsiStrat() {
         try {
@@ -19,8 +26,8 @@ export default function () {
             const response = await fetch(`http://localhost:3001/strategy/${selection?.id}/rsi/${length}`, options)
             const body = await response.json()
 
-            let strategyInfo = new StrategyInfo(body.date, body.price, body.equity, body["total-trades"],
-                body.sharpie, body.sortino, body.omega, body['max-drawdown'], body.trades
+            let strategyInfo = new StrategyInfo(body.date, body.price, body.equity, body.totalTrades,
+                body.sharpie, body.sortino, body.omega, body.maxDrawdown, body.netProfit, body.trades
             )
 
 
@@ -30,14 +37,42 @@ export default function () {
         }
     }
 
+    useEffect(() => {
+        // this count is so that the watchlist can open
+        const updateWidth = () => {
+            if (chartRef.current) {
+                console.log(`Window inner width: ${window.innerWidth}, Outer width: ${window.outerWidth}`)
+                let width = window.innerWidth
+                if (width > 1060) {
+                    setChartWidth(width * 0.6)//chartRef.current.offsetWidth)
+                    setTablesWidth(width * 0.4)
+                    setDisplayType("flex")
+                    setDisplayMargin(0)
+                    setRightValue("0")
+                } else {
+                    setChartWidth(width * 0.96)
+                    setTablesWidth(width * 0.80)
+                    setDisplayType("")
+                    setDisplayMargin(4)
+                    setRightValue("1%")
+                }
+            }
+        }
 
+        updateWidth()
+
+        window.addEventListener('resize', updateWidth)
+
+        return () => {
+            window.removeEventListener('resize', updateWidth)
+        };
+    })
 
 
     return (
-        <main className="main-page">
-            <LeftNavBar />
-            <div>
-                <Box >
+        <>
+            <header className="search-bar">
+                <Stack direction={"row"} spacing={1} sx={{ padding: 1 }} className="strategyheader">
                     <VirtualizedAutoComplete setSearch={setSelection} />
                     <TextField
                         sx={{ color: "white" }}
@@ -47,75 +82,38 @@ export default function () {
                         onChange={(event) => setLength(event.target.value)}
                     />
                     <Button variant="outlined" color="white" sx={{ margin: 1 }} onClick={() => getRsiStrat()}>Submit</Button>
+                </Stack>
+            </header>
+            <Box sx={{
+                padding: 0,
+                margin: displayMargin,
+                display: displayType,
+                marginTop: "5px",
+                minHeight: "100vh",
+            }}>
+                <LeftNavBar />
+                <Box ref={chartRef} sx={{
+                    position: "relative",
+                    width: chartWidth,
+                    transition: "width 0.1s ease",
+                    right: rightValue
+                }}>
+                    {data ?
+                        <StrategyChart selection={selection} data={data} width={chartWidth} /> :
+                        <></>
+                    }
                 </Box>
-                {data ?
-                    <Plot
-                        data={[
-                            {
-                                x: data.date,
-                                y: data.equity,
-                                type: 'scatter',
-                                mode: 'lines+markers',
-                                marker: { color: 'white' },
-                                name: 'Equity',
-                                yaxis: 'y1'
-                            },
-                            {
-                                x: data.date,
-                                y: data.price,
-                                type: 'scatter',
-                                mode: 'lines+markers',
-                                marker: { color: '#1925f7' },
-                                name: 'Price',
-                                yaxis: 'y2'
-                            }
-                        ]}
-                        layout={{
-                            title: {
-                                text: `${selection?.symbol.toUpperCase()} RSI Equity`,
-                                font: {
-                                    color: "#FFF",
-                                    weight: 1000
-                                }
-                            },
-                            width: 1000, height: 500,
-                            margin: {
-                                l: 50,
-                                r: 50,
-                                b: 40,
-                                t: 50
-                            },
-                            yaxis: {
-                                title: "Equity",
-                                side: 'right',
-                                color: '#FFFFFF',         // Color of the y-axis line and ticks
-                                gridcolor: '#b2b2d4',     // Color of the y-axis grid lines
-                                zerolinecolor: '#FFFFFF',
-                            },
-                            yaxis2: {
-                                title: 'Price',
-                                overlaying: 'y',
-                                side: 'left',
-                                showgrid: false,
-                                zeroline: false,
-                                color: '#FFFFFF'
-                            },
-                            paper_bgcolor: '#2b2b3d',
-                            plot_bgcolor: '#4a4a5e',
-                            xaxis: {
-                                color: '#FFFFFF',         // Color of the x-axis line and ticks
-                                gridcolor: '#b2b2d4',     // Color of the x-axis grid lines
-                                zerolinecolor: '#FFFFFF', // Color of the x-axis zero line (if visible)
-                            },
-                            legend: {
-                                x: 1.05
-                            }
-                        }}
-                    /> :
-                    <></>
-                }
-            </div>
-        </main>
+                <Box sx={{
+                    width: tablesWidth,
+                    transition: "width 0.1s ease",
+                    margin: "5%"
+                }}>
+                    <StrategyInfoTable strategyInfo={data} />
+                </Box>
+
+
+            </Box>
+        </>
     )
 }
 

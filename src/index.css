@@ -13,6 +13,8 @@
   margin-top: 5px;
 }
 
+
+
 .chart-block {
   flex: 8;
   width: 70%;
@@ -20,7 +22,7 @@
 }
 
 .datalist-block {
-  width: 15%;
+  width: 18%;
   box-sizing: border-box;
 
   border-top-left-radius: 150px;
@@ -74,6 +76,10 @@ body {
   background-color: var(--secondary);
   color: white;
   height: 100%;
+}
+
+.chart-grid {
+  width: 100%;
 }
 
 .watchlist-item:hover {

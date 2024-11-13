@@ -34,27 +34,19 @@ export default function () {
     }, ["never"])
 
     useEffect(() => {
-        // this count is so that the watchlist can open
         const updateWidth = () => {
-            // console.log("Width has been updated, Count: ", count)
             if (chartRef.current) {
                 setChartWidth(chartRef.current.offsetWidth)
             }
+
         }
+
         updateWidth()
 
-        const resizeObserver = new ResizeObserver(() => {
-            updateWidth()
-        })
+        window.addEventListener('resize', updateWidth)
 
-        if (chartRef.current) {
-            resizeObserver.observe(chartRef.current);
-        }
         return () => {
-            if (chartRef.current) {
-                resizeObserver.unobserve(chartRef.current);
-            }
-            resizeObserver.disconnect();
+            window.removeEventListener('resize', updateWidth)
         };
     })
 
